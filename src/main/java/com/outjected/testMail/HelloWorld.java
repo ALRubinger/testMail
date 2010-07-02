@@ -77,6 +77,7 @@ class HelloWorld
       msg.setSubject("HTML+Text Message from Seam Mail - " + java.util.UUID.randomUUID().toString());
       msg.setHTMLBodyTextAlt(getHTMLBody(), text);
       msg.setImportance(MessagePriority.LOW);
+      msg.setDeliveryReciept("cody.lerum@clearfly.net");
       mail.send(msg);
    }
    

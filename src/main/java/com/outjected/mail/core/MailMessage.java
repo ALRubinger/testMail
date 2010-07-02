@@ -113,7 +113,7 @@ public class MailMessage
 
    public void setDeliveryReciept(String email) throws SeamMailException
    {
-      setHeader(MailHeader.DELIVERY_RECIEPT.headerValue(), email);
+      setHeader(MailHeader.DELIVERY_RECIEPT.headerValue(), "<" + email + ">");
    }
 
    public void setReadReciept(String email) throws SeamMailException
