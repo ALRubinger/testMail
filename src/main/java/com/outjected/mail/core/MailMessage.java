@@ -16,6 +16,8 @@ import com.outjected.mail.core.enumurations.MailHeader;
 import com.outjected.mail.core.enumurations.MessagePriority;
 import com.outjected.mail.core.enumurations.RecipientType;
 
+import exception.SeamMailException;
+
 public class MailMessage
 {
    private RootMimeMessage rootMimeMessage;

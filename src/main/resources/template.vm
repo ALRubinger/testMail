@@ -1,0 +1,9 @@
+<html xmlns="http://www.w3.org/1999/xhtml">
+   <body>
+      <p>
+         <b>$helloWorld.email,</b>
+      </p>
+      <p>This is an example <i>HTML</i> email sent by Seam.</p>
+      <p>It has an alternative text body for mail readers that don't support html.</p>
+   </body>
+</html>

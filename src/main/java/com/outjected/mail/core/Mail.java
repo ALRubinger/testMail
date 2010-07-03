@@ -4,6 +4,8 @@ import javax.inject.Inject;
 import javax.mail.MessagingException;
 import javax.mail.Transport;
 
+import exception.SeamMailException;
+
 public class Mail
 {
    @Inject

@@ -5,6 +5,8 @@ import java.util.Collection;
 
 import javax.mail.internet.InternetAddress;
 
+import exception.SeamMailException;
+
 public class MailUtility
 {
    public static InternetAddress getInternetAddress(EmailContact emailContact) throws SeamMailException

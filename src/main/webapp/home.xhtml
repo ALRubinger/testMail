@@ -20,11 +20,11 @@
             </tr>
          </table>
          <p>
-            <h:commandButton action="#{helloWorld.sendText()}" value="Send Text Email"/>
-            <h:commandButton action="#{helloWorld.sendHTML()}" value="Send HTML Email"/>
-            <h:commandButton action="#{helloWorld.sendHTMLwithAlternative()}" value="Send HTML+Text Email"/>           
+            <h:commandButton action="#{helloWorld.sendText()}" value="Send Text Email" />
+            <h:commandButton action="#{helloWorld.sendHTML()}" value="Send HTML Email" onclick="value='Sending...';"/>
+            <h:commandButton action="#{helloWorld.sendHTMLwithAlternative()}" value="Send HTML+Text Email" onclick="value='Sending...';"/>           
             <h:outputText value="Message Sent!" rendered="#{facesContext.postback and empty facesContext.messageList}" style="color: green;"/>
          </p>
       </h:form>
-   </ui:define>
+   </ui:define>   
 </ui:composition>
