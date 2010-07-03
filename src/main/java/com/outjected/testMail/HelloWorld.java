@@ -7,7 +7,6 @@ import javax.inject.Inject;
 import javax.validation.constraints.NotNull;
 
 import org.apache.velocity.Template;
-import org.apache.velocity.VelocityContext;
 import org.apache.velocity.app.VelocityEngine;
 import org.apache.velocity.exception.ParseErrorException;
 import org.apache.velocity.exception.ResourceNotFoundException;
@@ -19,6 +18,8 @@ import com.outjected.mail.core.Mail;
 import com.outjected.mail.core.MailMessage;
 import com.outjected.mail.core.enumurations.MessagePriority;
 import com.outjected.mail.core.enumurations.RecipientType;
+import com.outjected.mail.velocity.CDIVelocityContext;
+import com.outjected.mail.velocity.SeamBaseVelocityContext;
 
 import exception.SeamMailException;
 import exception.SeamTemplatingException;
@@ -111,7 +112,7 @@ class HelloWorld
       VelocityEngine ve = new VelocityEngine();
       ve.setProperty("runtime.log.logsystem.class", "org.apache.velocity.runtime.log.SimpleLog4JLogSystem");
       
-      VelocityContext context = new VelocityContext();
+      SeamBaseVelocityContext context = new SeamBaseVelocityContext(new CDIVelocityContext());
       context.put("helloWorld", this);
       
       try

@@ -4,6 +4,11 @@ import org.apache.velocity.context.AbstractContext;
 
 public class CDIVelocityContext extends AbstractContext
 {
+   
+   public CDIVelocityContext()
+   {
+      super();
+   }
 
    @Override
    public boolean internalContainsKey(Object key)
@@ -30,7 +35,6 @@ public class CDIVelocityContext extends AbstractContext
    @Deprecated
    public Object internalPut(String key, Object value)
    {
-      //This won't work
       return null;
    }
 
