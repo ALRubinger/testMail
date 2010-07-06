@@ -5,7 +5,8 @@ import java.util.Collection;
 
 import javax.mail.internet.InternetAddress;
 
-import exception.SeamMailException;
+import com.outjected.exception.SeamMailException;
+
 
 public class MailUtility
 {

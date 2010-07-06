@@ -1,30 +1,22 @@
 package com.outjected.mail.core;
 
 import javax.inject.Inject;
-import javax.mail.MessagingException;
-import javax.mail.Transport;
-
-import exception.SeamMailException;
 
 public class Mail
 {
    @Inject
-   private MailMessage  mailMessage;
-   
-   public MailMessage create()
+   private BaseMailMessage baseMailMessage;
+
+   @Inject 
+   private VelocityMailMessage velocityMailMessage;
+
+   public BaseMailMessage createBaseMailMessage()
    {
-      return mailMessage;
+      return baseMailMessage;
    }
 
-   public void send(MailMessage msg) throws SeamMailException
+   public VelocityMailMessage createVelocityMailMessage()
    {
-      try
-      {
-         Transport.send(msg.getRootMimeMessage());
-      }
-      catch (MessagingException e)
-      {
-         throw new SeamMailException("Message Send Failed!", e);
-      }
+      return velocityMailMessage;
    }
 }

@@ -6,25 +6,26 @@ import java.util.Date;
 import javax.inject.Inject;
 import javax.mail.MessagingException;
 import javax.mail.Session;
+import javax.mail.Transport;
 import javax.mail.internet.MimeBodyPart;
 import javax.mail.internet.MimeMessage;
 import javax.mail.internet.MimeMultipart;
 
+import com.outjected.exception.SeamMailException;
 import com.outjected.mail.annotations.Module;
 import com.outjected.mail.core.enumurations.ContentDisposition;
 import com.outjected.mail.core.enumurations.MailHeader;
 import com.outjected.mail.core.enumurations.MessagePriority;
 import com.outjected.mail.core.enumurations.RecipientType;
 
-import exception.SeamMailException;
 
-public class MailMessage
+public class BaseMailMessage
 {
    private RootMimeMessage rootMimeMessage;
    private String charset;
 
    @Inject
-   public MailMessage(@Module Session session) throws SeamMailException
+   public BaseMailMessage(@Module Session session) throws SeamMailException
    {
       rootMimeMessage = new RootMimeMessage(session);
       charset = "UTF-8";
@@ -253,5 +254,17 @@ public class MailMessage
    public MimeMessage getRootMimeMessage()
    {
       return rootMimeMessage;
+   }
+   
+   public void send() throws SeamMailException
+   {
+      try
+      {
+         Transport.send(rootMimeMessage);
+      }
+      catch (MessagingException e)
+      {
+         throw new SeamMailException("Message Send Failed!", e);
+      }
    }
 }

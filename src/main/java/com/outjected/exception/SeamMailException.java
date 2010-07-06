@@ -1,4 +1,4 @@
-package exception;
+package com.outjected.exception;
 
 public class SeamMailException extends Exception
 {

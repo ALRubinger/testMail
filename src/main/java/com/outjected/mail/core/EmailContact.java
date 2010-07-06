@@ -2,7 +2,8 @@ package com.outjected.mail.core;
 
 import java.nio.charset.Charset;
 
-import exception.SeamMailException;
+import com.outjected.exception.SeamMailException;
+
 
 public class EmailContact
 {

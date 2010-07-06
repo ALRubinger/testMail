@@ -4,8 +4,8 @@ import org.apache.velocity.VelocityContext;
 
 public class SeamBaseVelocityContext extends VelocityContext
 {
-   public SeamBaseVelocityContext(CDIVelocityContext cdiVelocityContext)
+   public SeamBaseVelocityContext(SeamELVelocityContext seamELVelocityContext)
    {
-      super(cdiVelocityContext);
+      super(seamELVelocityContext);
    }
 }
