@@ -2,12 +2,14 @@ package com.outjected.mail.core;
 
 import javax.inject.Inject;
 
+import com.outjected.mail.annotations.Velocity;
+
 public class Mail
 {
    @Inject
    private BaseMailMessage baseMailMessage;
-
-   @Inject 
+   
+   @Inject @Velocity
    private VelocityMailMessage velocityMailMessage;
 
    public BaseMailMessage createBaseMailMessage()

@@ -6,5 +6,13 @@
 	<classpathentry excluding="**" kind="src" output="target/test-classes" path="src/test/resources"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER/org.eclipse.jdt.internal.debug.ui.launcher.StandardVMType/JavaSE-1.6"/>
 	<classpathentry kind="con" path="org.maven.ide.eclipse.MAVEN2_CLASSPATH_CONTAINER"/>
+	<classpathentry kind="lib" path="C:/Users/cody.lerum/.m2/repository/org/jboss/weld/weld-extensions/1.0.0.Alpha2/weld-extensions-1.0.0.Alpha2.jar" sourcepath="C:/Users/cody.lerum/.m2/repository/org/jboss/weld/weld-extensions/1.0.0.Alpha2/weld-extensions-1.0.0.Alpha2-sources.jar">
+		<attributes>
+			<attribute name="maven.groupId" value="org.jboss.weld"/>
+			<attribute name="maven.artifactId" value="weld-extensions"/>
+			<attribute name="maven.version" value="1.0.0.Alpha2"/>
+			<attribute name="maven.scope" value="compile"/>
+		</attributes>
+	</classpathentry>
 	<classpathentry kind="output" path="target/classes"/>
 </classpath>

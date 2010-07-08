@@ -154,13 +154,6 @@
 			<artifactId>velocity</artifactId>
 			<version>1.6.4</version>
 		</dependency>
-
-		<dependency>
-			<groupId>org.apache.velocity</groupId>
-			<artifactId>velocity</artifactId>
-			<version>1.6.4</version>
-		</dependency>
-
 		<dependency>
 			<groupId>org.jboss.weld</groupId>
 			<artifactId>weld-extensions</artifactId>
@@ -168,10 +161,11 @@
 		</dependency>
 
 		<dependency>
-			<groupId>org.jboss.weld</groupId>
-			<artifactId>weld-core</artifactId>
-			<version>1.0.1-Final</version>
+			<groupId>dumbster</groupId>
+			<artifactId>dumbster</artifactId>
+			<version>1.6</version>
 		</dependency>
+
 
 	</dependencies>
 	<build>

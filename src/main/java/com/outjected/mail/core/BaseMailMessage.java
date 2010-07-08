@@ -1,8 +1,15 @@
 package com.outjected.mail.core;
 
+import java.io.File;
+import java.net.MalformedURLException;
+import java.net.URL;
 import java.util.Collection;
 import java.util.Date;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.UUID;
 
+import javax.activation.URLDataSource;
 import javax.inject.Inject;
 import javax.mail.MessagingException;
 import javax.mail.Session;
@@ -18,11 +25,13 @@ import com.outjected.mail.core.enumurations.MailHeader;
 import com.outjected.mail.core.enumurations.MessagePriority;
 import com.outjected.mail.core.enumurations.RecipientType;
 
-
 public class BaseMailMessage
 {
    private RootMimeMessage rootMimeMessage;
    private String charset;
+   private Map<String, Attachment> attachments = new HashMap<String, Attachment>();
+   private MimeMultipart rootMultipart = new MimeMultipart("mixed");
+   private MimeMultipart relatedMultipart = new MimeMultipart("related");
 
    @Inject
    public BaseMailMessage(@Module Session session) throws SeamMailException
@@ -30,7 +39,20 @@ public class BaseMailMessage
       rootMimeMessage = new RootMimeMessage(session);
       charset = "UTF-8";
       setSentDate(new Date());
-      setMessageID(java.util.UUID.randomUUID().toString());
+      setMessageID("<" + UUID.randomUUID().toString() + "@" + UUID.randomUUID().toString() + ">");
+      initialize();
+   }
+
+   private void initialize() throws SeamMailException
+   {
+      try
+      {
+         rootMimeMessage.setContent(rootMultipart);
+      }
+      catch (MessagingException e)
+      {
+         throw new SeamMailException("Unable to set RootMultiPart", e);
+      }
    }
 
    public void addRecipient(RecipientType recipientType, EmailContact emailContact) throws SeamMailException
@@ -121,7 +143,7 @@ public class BaseMailMessage
 
    public void setReadReciept(String email) throws SeamMailException
    {
-      setHeader(MailHeader.DELIVERY_RECIEPT.headerValue(), email);
+      setHeader(MailHeader.READ_RECIEPT.headerValue(), "<" + email + ">");
    }
 
    public void setImportance(MessagePriority messagePriority) throws SeamMailException
@@ -157,12 +179,9 @@ public class BaseMailMessage
 
    public void setTextBody(String text) throws SeamMailException
    {
-      MimeMultipart textMultipart = new MimeMultipart();
-
       try
       {
-         textMultipart.addBodyPart(buildTextBodyPart(text));
-         rootMimeMessage.setContent(textMultipart);
+         rootMultipart.addBodyPart(buildTextBodyPart(text));
       }
       catch (MessagingException e)
       {
@@ -172,12 +191,12 @@ public class BaseMailMessage
 
    public void setHTMLBody(String html) throws SeamMailException
    {
-      MimeMultipart htmlMultipart = new MimeMultipart();
-
+      MimeBodyPart relatedBodyPart = new MimeBodyPart();
       try
       {
-         htmlMultipart.addBodyPart(buildHTMLBodyPart(html));
-         rootMimeMessage.setContent(htmlMultipart);
+         relatedMultipart.addBodyPart(buildHTMLBodyPart(html));
+         relatedBodyPart.setContent(relatedMultipart);
+         rootMultipart.addBodyPart(relatedBodyPart);
       }
       catch (MessagingException e)
       {
@@ -187,10 +206,8 @@ public class BaseMailMessage
 
    public void setHTMLBodyTextAlt(String html, String text) throws SeamMailException
    {
-      MimeMultipart mixedMultipart = new MimeMultipart("mixed");
       MimeBodyPart mixedBodyPart = new MimeBodyPart();
 
-      MimeMultipart relatedMultiPart = new MimeMultipart("related");
       MimeBodyPart relatedBodyPart = new MimeBodyPart();
 
       MimeMultipart alternativeMultiPart = new MimeMultipart("alternative");
@@ -203,12 +220,11 @@ public class BaseMailMessage
 
          relatedBodyPart.setContent(alternativeMultiPart);
 
-         relatedMultiPart.addBodyPart(relatedBodyPart);
+         relatedMultipart.addBodyPart(relatedBodyPart);
 
-         mixedBodyPart.setContent(relatedMultiPart);
-         mixedMultipart.addBodyPart(mixedBodyPart);
+         mixedBodyPart.setContent(relatedMultipart);
 
-         rootMimeMessage.setContent(relatedMultiPart);
+         rootMultipart.addBodyPart(mixedBodyPart);
       }
       catch (MessagingException e)
       {
@@ -241,7 +257,6 @@ public class BaseMailMessage
       {
          htmlBodyPart.setDisposition(ContentDisposition.INLINE.headerValue());
          htmlBodyPart.setText(html, charset, "html");
-         // htmlBodyPart.setHeader("content-transfer-encoding", "quoted-printable");
       }
       catch (MessagingException e)
       {
@@ -251,20 +266,110 @@ public class BaseMailMessage
       return htmlBodyPart;
    }
 
+   public void addAttachment(File file, ContentDisposition contentDisposition) throws SeamMailException
+   {
+      Attachment attachment = new Attachment(file, file.getName(), contentDisposition);
+      addAttachment(attachment);
+   }
+
+   public void addAttachment(File file, String fileName, ContentDisposition contentDisposition) throws SeamMailException
+   {
+      Attachment attachment = new Attachment(file, fileName, contentDisposition);
+      addAttachment(attachment);
+   }
+
+   public void addAttachment(byte[] bytes, String fileName, String mimeType, ContentDisposition contentDisposition) throws SeamMailException
+   {
+      Attachment attachment = new Attachment(bytes, fileName, mimeType, contentDisposition);
+      addAttachment(attachment);
+   }
+   
+   public void addAttachment(String url, String fileName, ContentDisposition contentDisposition) throws SeamMailException
+   {
+      URL u;
+      
+      try
+      {
+         u = new URL(url);
+      }
+      catch (MalformedURLException e)
+      {
+         throw new SeamMailException("Unable to add attachment with URL: " + url, e);
+      }
+      
+      Attachment attachment = new Attachment(new URLDataSource(u) , fileName, contentDisposition);
+      addAttachment(attachment);
+   }
+
+   public void addAttachment(Attachment attachment) throws SeamMailException
+   {
+      attachments.put(attachment.getAttachmentFileName(), attachment);
+   }
+
+   public Map<String, Attachment> getAttachments()
+   {
+      return attachments;
+   }
+
    public MimeMessage getRootMimeMessage()
    {
       return rootMimeMessage;
    }
+      
+   public void finalizeMessage() throws SeamMailException
+   {
+      addAttachmentsToMessage();
+   }
    
+   public MimeMessage getFinalizedMessage() throws SeamMailException
+   {  
+      finalizeMessage();
+      return getRootMimeMessage();
+   }
+
    public void send() throws SeamMailException
    {
       try
-      {
+      {         
+         finalizeMessage();
          Transport.send(rootMimeMessage);
       }
       catch (MessagingException e)
       {
          throw new SeamMailException("Message Send Failed!", e);
+      }
+   }
+
+   private void addAttachmentsToMessage() throws SeamMailException
+   {
+      for (Attachment a : attachments.values())
+      {
+         if (a.getContentDisposition() == ContentDisposition.ATTACHMENT)
+         {
+            try
+            {
+               rootMultipart.addBodyPart(a);
+            }
+            catch (MessagingException e)
+            {
+               throw new SeamMailException("Unable to Add STANDARD Attachment: " + a.getAttachmentFileName(), e);
+            }
+         }
+         else if (a.getContentDisposition() == ContentDisposition.INLINE)
+         {
+            try
+            {
+               relatedMultipart.addBodyPart(a);
+            }
+            catch (MessagingException e)
+            {
+               throw new SeamMailException("Unable to Add INLINE Attachment: " + a.getAttachmentFileName(), e);
+            }
+         }
+         else
+         {
+            throw new SeamMailException("Unsupported Attachment Content Disposition");
+         }
       }
    }
 }

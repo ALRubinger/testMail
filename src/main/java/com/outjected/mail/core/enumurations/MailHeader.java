@@ -2,8 +2,8 @@ package com.outjected.mail.core.enumurations;
 
 public enum MailHeader
 {
-   DELIVERY_RECIEPT("Disposition-Notification-To"),
-   READ_RECIEPT("Return-Receipt-To");
+   DELIVERY_RECIEPT("Return-Receipt-To"),
+   READ_RECIEPT("Disposition-Notification-To");
    
    private String headerValue;
    

@@ -1,12 +1,16 @@
 package com.outjected.mail.core.enumurations;
 
+import javax.mail.internet.MimeBodyPart;
+
+import com.outjected.exception.SeamMailException;
+
 public enum ContentDisposition
 {
-   ATTACHMENT("attachment"),
-   INLINE("inline");
-   
+   ATTACHMENT(MimeBodyPart.ATTACHMENT),
+   INLINE(MimeBodyPart.INLINE);
+
    private String headerValue;
-   
+
    private ContentDisposition(String headerValue)
    {
       this.headerValue = headerValue;
@@ -15,5 +19,21 @@ public enum ContentDisposition
    public String headerValue()
    {
       return headerValue;
+   }
+
+   public static ContentDisposition mapValue(String value) throws SeamMailException
+   {
+      if (value.equals(MimeBodyPart.ATTACHMENT))
+      {
+         return ContentDisposition.ATTACHMENT;
+      }
+      else if (value.equals(MimeBodyPart.INLINE))
+      {
+         return ContentDisposition.INLINE;
+      }
+      else
+      {
+         throw new SeamMailException("Unsupported Content DispostionType: " + value);
+      }
    }
 }

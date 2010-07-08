@@ -8,7 +8,16 @@
       <h:form id="bv">
          <h2>Bean Validation examples</h2>
          <p>Enforces annotation-based constraints defined on the model class.</p>
-         <table>            
+         <table>
+         	<tr>
+               <th style="text-align: right;">
+                  <h:outputLabel for="name" value="Name:"/>
+               </th>
+               <td>
+                  <h:inputText id="name" value="#{helloWorld.name}"/>
+                  <h:message for="name" errorClass="invalid"/>
+               </td>
+            </tr>           
             <tr>
                <th style="text-align: right;">
                   <h:outputLabel for="email" value="Email:"/>
