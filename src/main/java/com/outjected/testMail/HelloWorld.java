@@ -69,7 +69,7 @@ class HelloWorld
       msg.setFrom(new EmailContact("Seam Framework", "seam@jboss.com"));
       msg.addRecipient(RecipientType.TO, new EmailContact(name, email));
       msg.subject("Text Message from Seam Mail - " + java.util.UUID.randomUUID().toString());
-      msg.setTextBody(text);
+      msg.setText(text);
       msg.send();
    }
 
@@ -79,7 +79,7 @@ class HelloWorld
       msg.setFrom(new EmailContact("Seam Framework", "seam@jboss.com"));
       msg.to(name, email);
       msg.subject("HTML Message from Seam Mail - " + java.util.UUID.randomUUID().toString());
-      msg.setTemplateHTMLBody("src/main/resources/template.html.vm");
+      msg.setTemplateHTML("src/main/resources/template.html.vm");
       msg.put("version", "Seam 3");
       msg.importance(MessagePriority.HIGH);
       msg.addAttachment("http://www.seamframework.org/themes/sfwkorg/img/seam_icon_large.png", "seamLogo.png", ContentDisposition.INLINE);
@@ -93,7 +93,7 @@ class HelloWorld
       msg.addRecipient(RecipientType.TO, new EmailContact(name, email));
       msg.subject("HTML+Text Message from Seam Mail - " + java.util.UUID.randomUUID().toString());
       msg.put("version", "Seam 3");
-      msg.setTemplateHTMLBodyTextAlt("src/main/resources/template.html.vm", "src/main/resources/template.text.vm");
+      msg.setTemplateHTMLTextAlt("src/main/resources/template.html.vm", "src/main/resources/template.text.vm");
       msg.importance(MessagePriority.LOW);
       msg.deliveryReciept("cody.lerum@clearfly.net");
       msg.readReciept("cody.lerum@clearfly.net");

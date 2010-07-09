@@ -46,15 +46,15 @@ public class VelocityMailMessage extends BaseMailMessage implements TemplateMail
    }
 
    @Override
-   public TemplateMailMessage setTemplateHTMLBodyTextAlt(String htmlTemplatePath, String textTemplatePath) throws SeamMailException
+   public TemplateMailMessage setTemplateHTMLTextAlt(String htmlTemplatePath, String textTemplatePath) throws SeamMailException
    {
-      setTemplateHTMLBody(htmlTemplatePath);
-      setTemplateTextBody(textTemplatePath);
+      setTemplateHTML(htmlTemplatePath);
+      setTemplateText(textTemplatePath);
       
       return this;
    }
 
-   public TemplateMailMessage setTemplateHTMLBody(String htmlTemplatePath) throws SeamMailException
+   public TemplateMailMessage setTemplateHTML(String htmlTemplatePath) throws SeamMailException
    {
       try
       {
@@ -67,7 +67,7 @@ public class VelocityMailMessage extends BaseMailMessage implements TemplateMail
       return this;
    }
 
-   public TemplateMailMessage setTemplateTextBody(String textTemplatePath) throws SeamMailException
+   public TemplateMailMessage setTemplateText(String textTemplatePath) throws SeamMailException
    {
       try
       {
@@ -138,7 +138,7 @@ public class VelocityMailMessage extends BaseMailMessage implements TemplateMail
       {
          try
          {
-            super.setHTMLBodyTextAlt(mergeTemplate(htmlTemplate), mergeTemplate(textTemplate));
+            super.setHTMLTextAlt(mergeTemplate(htmlTemplate), mergeTemplate(textTemplate));
          }
          catch (SeamTemplatingException e)
          {
@@ -149,7 +149,7 @@ public class VelocityMailMessage extends BaseMailMessage implements TemplateMail
       {
          try
          {
-            super.setHTMLBody(mergeTemplate(htmlTemplate));
+            super.setHTML(mergeTemplate(htmlTemplate));
          }
          catch (SeamTemplatingException e)
          {
@@ -160,7 +160,7 @@ public class VelocityMailMessage extends BaseMailMessage implements TemplateMail
       {
          try
          {
-            super.setTextBody(mergeTemplate(textTemplate));
+            super.setText(mergeTemplate(textTemplate));
          }
          catch (SeamTemplatingException e)
          {

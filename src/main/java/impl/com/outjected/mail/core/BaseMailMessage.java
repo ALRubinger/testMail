@@ -213,7 +213,7 @@ public class BaseMailMessage implements MailMessage
       }
    }
 
-   public BaseMailMessage setTextBody(String text) throws SeamMailException
+   public BaseMailMessage setText(String text) throws SeamMailException
    {
       try
       {
@@ -226,7 +226,7 @@ public class BaseMailMessage implements MailMessage
       return this;
    }
 
-   public BaseMailMessage setHTMLBody(String html) throws SeamMailException
+   public BaseMailMessage setHTML(String html) throws SeamMailException
    {
       MimeBodyPart relatedBodyPart = new MimeBodyPart();
       try
@@ -242,7 +242,7 @@ public class BaseMailMessage implements MailMessage
       return this;
    }
 
-   public void setHTMLBodyTextAlt(String html, String text) throws SeamMailException
+   public void setHTMLTextAlt(String html, String text) throws SeamMailException
    {
       MimeBodyPart mixedBodyPart = new MimeBodyPart();
 

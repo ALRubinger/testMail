@@ -24,9 +24,11 @@ public interface MailMessage
 
    public MailMessage subject(String string) throws SeamMailException;
 
-   public MailMessage setTextBody(String text) throws SeamMailException;
+   public MailMessage setText(String text) throws SeamMailException;
    
-   public MailMessage setHTMLBody(String text) throws SeamMailException;   
+   public MailMessage setHTML(String text) throws SeamMailException; 
+   
+   public void setHTMLTextAlt(String html, String text) throws SeamMailException;
    
    public void send() throws SeamMailException;
 
