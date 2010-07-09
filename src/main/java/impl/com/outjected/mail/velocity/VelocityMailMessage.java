@@ -16,7 +16,7 @@ import org.apache.velocity.exception.ResourceNotFoundException;
 
 import com.outjected.mail.annotations.Module;
 import com.outjected.mail.annotations.Velocity;
-import com.outjected.mail.api.MailMessage;
+import com.outjected.mail.api.TemplateMailMessage;
 import com.outjected.mail.core.AttachmentMap;
 import com.outjected.mail.core.BaseMailMessage;
 import com.outjected.mail.core.MailTemplate;
@@ -24,7 +24,7 @@ import com.outjected.mail.exception.SeamMailException;
 import com.outjected.mail.exception.SeamTemplatingException;
 
 @Velocity
-public class VelocityMailMessage extends BaseMailMessage implements MailMessage
+public class VelocityMailMessage extends BaseMailMessage implements TemplateMailMessage
 {
    private VelocityEngine velocityEngine;
    private SeamBaseVelocityContext context;
@@ -46,13 +46,15 @@ public class VelocityMailMessage extends BaseMailMessage implements MailMessage
    }
 
    @Override
-   public void setTemplateHTMLBodyTextAlt(String htmlTemplatePath, String textTemplatePath) throws SeamMailException
+   public VelocityMailMessage setTemplateHTMLBodyTextAlt(String htmlTemplatePath, String textTemplatePath) throws SeamMailException
    {
       setTemplateHTMLBody(htmlTemplatePath);
       setTemplateTextBody(textTemplatePath);
+      
+      return this;
    }
 
-   public void setTemplateHTMLBody(String htmlTemplatePath) throws SeamMailException
+   public VelocityMailMessage setTemplateHTMLBody(String htmlTemplatePath) throws SeamMailException
    {
       try
       {
@@ -62,6 +64,7 @@ public class VelocityMailMessage extends BaseMailMessage implements MailMessage
       {
          throw new SeamMailException("Unable to add HTML template to MimeMessage", e);
       }
+      return this;
    }
 
    public void setTemplateTextBody(String textTemplatePath) throws SeamMailException
@@ -121,10 +124,10 @@ public class VelocityMailMessage extends BaseMailMessage implements MailMessage
       return writer.toString();
    }
 
-   @Override
-   public void put(String key, Object value)
+   public VelocityMailMessage put(String key, Object value)
    {
       context.put(key, value);
+      return this;
    }
 
    @Override

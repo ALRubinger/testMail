@@ -12,6 +12,7 @@ import org.hibernate.validator.constraints.NotEmpty;
 
 import com.outjected.mail.annotations.Velocity;
 import com.outjected.mail.api.MailMessage;
+import com.outjected.mail.api.TemplateMailMessage;
 import com.outjected.mail.core.EmailContact;
 import com.outjected.mail.core.enumurations.ContentDisposition;
 import com.outjected.mail.core.enumurations.MessagePriority;
@@ -28,7 +29,7 @@ class HelloWorld
    private String text = "This is the alternative text body for mail readers that don't support html";
 
    @Inject @Velocity 
-   private Instance<MailMessage> velocityMailMessage;
+   private Instance<TemplateMailMessage> velocityMailMessage;
    
    @Inject 
    private Instance<MailMessage> baseMailMessage;
@@ -74,7 +75,7 @@ class HelloWorld
 
    public void sendHTML() throws SeamMailException, SeamTemplatingException
    {
-      MailMessage msg = velocityMailMessage.get();
+      TemplateMailMessage msg = velocityMailMessage.get();
       msg.setFrom(new EmailContact("Seam Framework", "seam@jboss.com"));
       msg.to(name, email);
       msg.subject("HTML Message from Seam Mail - " + java.util.UUID.randomUUID().toString());
@@ -86,7 +87,7 @@ class HelloWorld
 
    public void sendHTMLwithAlternative() throws SeamMailException, SeamTemplatingException
    {
-      MailMessage msg = velocityMailMessage.get();
+      TemplateMailMessage msg = velocityMailMessage.get();
       msg.setFrom(new EmailContact("Seam Framework", "seam@jboss.com"));
       msg.addRecipient(RecipientType.TO, new EmailContact(name, email));
       msg.subject("HTML+Text Message from Seam Mail - " + java.util.UUID.randomUUID().toString());

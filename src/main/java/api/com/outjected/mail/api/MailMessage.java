@@ -10,37 +10,33 @@ import com.outjected.mail.exception.SeamMailException;
 
 public interface MailMessage
 {
-   public void setFrom(EmailContact emailContact) throws SeamMailException;
+   public MailMessage setFrom(EmailContact emailContact) throws SeamMailException;
    
-   public void addRecipient(RecipientType recipientType, EmailContact emailContact) throws SeamMailException;
+   public MailMessage addRecipient(RecipientType recipientType, EmailContact emailContact) throws SeamMailException;
    
-   public void from(String name, String address) throws SeamMailException;
+   public MailMessage from(String name, String address) throws SeamMailException;
    
-   public void to(String name, String address) throws SeamMailException;
+   public MailMessage to(String name, String address) throws SeamMailException;
    
-   public void cc(String name, String address) throws SeamMailException;
+   public MailMessage cc(String name, String address) throws SeamMailException;
 
-   public void bcc(String name, String address) throws SeamMailException;
+   public MailMessage bcc(String name, String address) throws SeamMailException;
 
-   public void subject(String string) throws SeamMailException;
+   public MailMessage subject(String string) throws SeamMailException;
 
-   public void setTextBody(String text) throws SeamMailException;
+   public MailMessage setTextBody(String text) throws SeamMailException;
+   
+   public MailMessage setHTMLBody(String text) throws SeamMailException;   
    
    public void send() throws SeamMailException;
 
-   public void put(String name, Object value);
+   public MailMessage importance(MessagePriority messagePriority) throws SeamMailException;
 
-   public void setTemplateHTMLBody(String pathToTemplate) throws SeamMailException;
+   public MailMessage addAttachment(File file, ContentDisposition attachment) throws SeamMailException;
 
-   public void importance(MessagePriority messagePriority) throws SeamMailException;
+   public MailMessage addAttachment(String url, String fileName, ContentDisposition contentDisposition) throws SeamMailException;
 
-   public void addAttachment(File file, ContentDisposition attachment) throws SeamMailException;
+   public MailMessage deliveryReciept(String address) throws SeamMailException;
 
-   public void addAttachment(String url, String fileName, ContentDisposition contentDisposition) throws SeamMailException;
-
-   public void deliveryReciept(String address) throws SeamMailException;
-
-   public void readReciept(String string) throws SeamMailException;
-
-   public void setTemplateHTMLBodyTextAlt(String htmlTemplate, String textTemplate) throws SeamMailException;
+   public MailMessage readReciept(String string) throws SeamMailException;
 }
