@@ -2,11 +2,11 @@ package com.outjected.mail.api;
 
 import java.io.File;
 
-import com.outjected.exception.SeamMailException;
 import com.outjected.mail.core.EmailContact;
 import com.outjected.mail.core.enumurations.ContentDisposition;
 import com.outjected.mail.core.enumurations.MessagePriority;
 import com.outjected.mail.core.enumurations.RecipientType;
+import com.outjected.mail.exception.SeamMailException;
 
 public interface MailMessage
 {
@@ -42,5 +42,5 @@ public interface MailMessage
 
    public void readReciept(String string) throws SeamMailException;
 
-   public void setTemplateHTMLBodyTextAlt(String htmlTemplate, String textTemplate);
+   public void setTemplateHTMLBodyTextAlt(String htmlTemplate, String textTemplate) throws SeamMailException;
 }

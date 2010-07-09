@@ -1,31 +1,27 @@
 package com.outjected.mail.velocity;
 
-import java.io.BufferedInputStream;
-import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.io.InputStreamReader;
 import java.io.StringWriter;
 
 import javax.inject.Inject;
 import javax.mail.Session;
 
-import org.apache.velocity.Template;
 import org.apache.velocity.app.VelocityEngine;
 import org.apache.velocity.exception.MethodInvocationException;
 import org.apache.velocity.exception.ParseErrorException;
 import org.apache.velocity.exception.ResourceNotFoundException;
-import org.apache.velocity.runtime.resource.loader.ResourceLoader;
-import org.apache.velocity.runtime.resource.loader.StringResourceLoader;
-import org.apache.velocity.runtime.resource.util.StringResourceRepository;
-import org.apache.velocity.runtime.resource.util.StringResourceRepositoryImpl;
-import org.jboss.weld.extensions.resourceLoader.ResourceProvider;
 
-import com.outjected.exception.SeamMailException;
-import com.outjected.exception.SeamTemplatingException;
 import com.outjected.mail.annotations.Module;
 import com.outjected.mail.annotations.Velocity;
 import com.outjected.mail.api.MailMessage;
 import com.outjected.mail.core.AttachmentMap;
 import com.outjected.mail.core.BaseMailMessage;
+import com.outjected.mail.core.MailTemplate;
+import com.outjected.mail.exception.SeamMailException;
+import com.outjected.mail.exception.SeamTemplatingException;
 
 @Velocity
 public class VelocityMailMessage extends BaseMailMessage implements MailMessage
@@ -33,11 +29,11 @@ public class VelocityMailMessage extends BaseMailMessage implements MailMessage
    private VelocityEngine velocityEngine;
    private SeamBaseVelocityContext context;
 
-   private Template textTemplate;
-   private Template htmlTemplate;
+   private MailTemplate textTemplate;
+   private MailTemplate htmlTemplate;
 
-   @Inject
-   private ResourceProvider resourceProvider;
+   //@Inject
+   //private ResourceProvider resourceProvider;
 
    @Inject
    public VelocityMailMessage(@Module Session session, @Module SeamCDIVelocityContext seamCDIVelocityContext) throws SeamMailException
@@ -50,10 +46,10 @@ public class VelocityMailMessage extends BaseMailMessage implements MailMessage
    }
 
    @Override
-   public void setHTMLBodyTextAlt(String htmlTemplatePath, String textTemplatePath) throws SeamMailException
+   public void setTemplateHTMLBodyTextAlt(String htmlTemplatePath, String textTemplatePath) throws SeamMailException
    {
-      setHTMLBody(htmlTemplatePath);
-      setTextBody(textTemplatePath);
+      setTemplateHTMLBody(htmlTemplatePath);
+      setTemplateTextBody(textTemplatePath);
    }
 
    public void setTemplateHTMLBody(String htmlTemplatePath) throws SeamMailException
@@ -68,8 +64,7 @@ public class VelocityMailMessage extends BaseMailMessage implements MailMessage
       }
    }
 
-   @Override
-   public void setTextBody(String textTemplatePath) throws SeamMailException
+   public void setTemplateTextBody(String textTemplatePath) throws SeamMailException
    {
       try
       {
@@ -81,55 +76,31 @@ public class VelocityMailMessage extends BaseMailMessage implements MailMessage
       }
    }
 
-   private Template createTemplate(String templatePath) throws SeamTemplatingException
+   private MailTemplate createTemplate(String templatePath) throws SeamTemplatingException
    {
-      Template template = null;
+	   FileInputStream inputStream;
+	   try 
+	   {
+		   inputStream = new FileInputStream(templatePath);
+	   } 
+	   catch (FileNotFoundException e) 
+	   {
+		   throw new SeamTemplatingException("Unable to find template " + templatePath ,e);
+	   }
+	   
+	  //InputStream inputStream = resourceProvider.loadResourceStream(templatePath);
+	   
+      MailTemplate template = new MailTemplate(templatePath, inputStream);
       
-      byte[] buffer = new byte[(int) new File(templatePath).length()];
-      
-      BufferedInputStream bis = new BufferedInputStream(resourceProvider.loadResourceStream(templatePath));
-     
-      try
-     {
-        bis.read(buffer);
-     }
-     catch (IOException e)
-     {
-        throw new SeamMailException("Unabled to read template: " + templatePath);
-     }      
-
-      try
-      {
-         resourceProvider.loadResourceStream(templatePath);
-         StringResourceRepository s = new StringResourceRepositoryImpl();
-         s.putStringResource("templatePath", new String(buffer));
-         Template t = new Template();
-         t.setResourceLoader(StringResourceLoader.setRepository(templatePath, s));
-         template = velocityEngine.getTemplate(templatePath);
-      }
-      catch (ResourceNotFoundException e)
-      {
-         throw new SeamTemplatingException("Unable to find template", e);
-      }
-      catch (ParseErrorException e)
-      {
-         throw new SeamTemplatingException("Unable to parse template", e);
-      }
-      catch (Exception e)
-      {
-         throw new SeamTemplatingException("Error while processing template", e);
-      }
-
       return template;
    }
 
-   private String mergeTemplate(Template template) throws SeamTemplatingException
+   private String mergeTemplate(MailTemplate template) throws SeamTemplatingException
    {
       StringWriter writer = new StringWriter();
       try
       {
-         velocityEngine.evaluate(context, writer, logTag, instream)
-         template.merge(context, writer);
+         velocityEngine.evaluate(context, writer, template.getName(), new InputStreamReader(template.getInputStream()));
       }
       catch (ResourceNotFoundException e)
       {

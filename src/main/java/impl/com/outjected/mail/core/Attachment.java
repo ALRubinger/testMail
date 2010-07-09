@@ -10,8 +10,8 @@ import javax.mail.MessagingException;
 import javax.mail.internet.MimeBodyPart;
 import javax.mail.util.ByteArrayDataSource;
 
-import com.outjected.exception.SeamMailException;
 import com.outjected.mail.core.enumurations.ContentDisposition;
+import com.outjected.mail.exception.SeamMailException;
 
 public class Attachment extends MimeBodyPart
 {

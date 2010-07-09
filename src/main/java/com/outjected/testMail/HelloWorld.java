@@ -10,16 +10,14 @@ import javax.validation.constraints.NotNull;
 import org.hibernate.validator.constraints.Email;
 import org.hibernate.validator.constraints.NotEmpty;
 
-import com.outjected.exception.SeamMailException;
-import com.outjected.exception.SeamTemplatingException;
 import com.outjected.mail.annotations.Velocity;
 import com.outjected.mail.api.MailMessage;
-import com.outjected.mail.core.BaseMailMessage;
 import com.outjected.mail.core.EmailContact;
 import com.outjected.mail.core.enumurations.ContentDisposition;
 import com.outjected.mail.core.enumurations.MessagePriority;
 import com.outjected.mail.core.enumurations.RecipientType;
-import com.outjected.mail.velocity.VelocityMailMessage;
+import com.outjected.mail.exception.SeamMailException;
+import com.outjected.mail.exception.SeamTemplatingException;
 
 public @Model
 class HelloWorld
@@ -93,11 +91,11 @@ class HelloWorld
       msg.addRecipient(RecipientType.TO, new EmailContact(name, email));
       msg.subject("HTML+Text Message from Seam Mail - " + java.util.UUID.randomUUID().toString());
       msg.put("version", "Seam 3");
-      msg.setHTMLBodyTextAlt("template.html.vm", "src/main/resources/template.text.vm");
+      msg.setTemplateHTMLBodyTextAlt("src/main/resources/template.html.vm", "src/main/resources/template.text.vm");
       msg.importance(MessagePriority.LOW);
       msg.deliveryReciept("cody.lerum@clearfly.net");
       msg.readReciept("cody.lerum@clearfly.net");
-      msg.addAttachment(new File("template.html.vm"), ContentDisposition.ATTACHMENT);
+      msg.addAttachment(new File("src/main/resources/template.html.vm"), ContentDisposition.ATTACHMENT);
       msg.addAttachment("http://www.seamframework.org/themes/sfwkorg/img/seam_icon_large.png", "seamLogo.png", ContentDisposition.INLINE);
       msg.send();
    }

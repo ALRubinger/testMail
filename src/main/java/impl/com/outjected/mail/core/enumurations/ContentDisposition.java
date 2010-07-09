@@ -2,7 +2,7 @@ package com.outjected.mail.core.enumurations;
 
 import javax.mail.internet.MimeBodyPart;
 
-import com.outjected.exception.SeamMailException;
+import com.outjected.mail.exception.SeamMailException;
 
 public enum ContentDisposition
 {
