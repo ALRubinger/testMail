@@ -45,7 +45,6 @@ public class VelocityMailMessage extends BaseMailMessage implements TemplateMail
       put("attachmentMap", new AttachmentMap(super.getAttachments()));
    }
 
-   @Override
    public TemplateMailMessage setTemplateHTMLTextAlt(String htmlTemplatePath, String textTemplatePath) throws SeamMailException
    {
       setTemplateHTML(htmlTemplatePath);
