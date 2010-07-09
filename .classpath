@@ -1,9 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <classpath>
-	<classpathentry kind="src" output="target/classes" path="src/main/java"/>
+	<classpathentry excluding="api/|impl/" kind="src" output="target/classes" path="src/main/java"/>
 	<classpathentry excluding="**" kind="src" output="target/classes" path="src/main/resources"/>
 	<classpathentry kind="src" output="target/test-classes" path="src/test/java"/>
 	<classpathentry excluding="**" kind="src" output="target/test-classes" path="src/test/resources"/>
+	<classpathentry kind="src" path="src/main/java/api"/>
+	<classpathentry kind="src" path="src/main/java/impl"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER/org.eclipse.jdt.internal.debug.ui.launcher.StandardVMType/JavaSE-1.6"/>
 	<classpathentry kind="con" path="org.maven.ide.eclipse.MAVEN2_CLASSPATH_CONTAINER"/>
 	<classpathentry kind="lib" path="C:/Users/cody.lerum/.m2/repository/org/jboss/weld/weld-extensions/1.0.0.Alpha2/weld-extensions-1.0.0.Alpha2.jar" sourcepath="C:/Users/cody.lerum/.m2/repository/org/jboss/weld/weld-extensions/1.0.0.Alpha2/weld-extensions-1.0.0.Alpha2-sources.jar">

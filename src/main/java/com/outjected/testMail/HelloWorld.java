@@ -2,6 +2,7 @@ package com.outjected.testMail;
 
 import java.io.File;
 
+import javax.enterprise.inject.Instance;
 import javax.enterprise.inject.Model;
 import javax.inject.Inject;
 import javax.validation.constraints.NotNull;
@@ -11,13 +12,14 @@ import org.hibernate.validator.constraints.NotEmpty;
 
 import com.outjected.exception.SeamMailException;
 import com.outjected.exception.SeamTemplatingException;
+import com.outjected.mail.annotations.Velocity;
+import com.outjected.mail.api.MailMessage;
 import com.outjected.mail.core.BaseMailMessage;
 import com.outjected.mail.core.EmailContact;
-import com.outjected.mail.core.Mail;
-import com.outjected.mail.core.VelocityMailMessage;
 import com.outjected.mail.core.enumurations.ContentDisposition;
 import com.outjected.mail.core.enumurations.MessagePriority;
 import com.outjected.mail.core.enumurations.RecipientType;
+import com.outjected.mail.velocity.VelocityMailMessage;
 
 public @Model
 class HelloWorld
@@ -27,9 +29,12 @@ class HelloWorld
 
    private String text = "This is the alternative text body for mail readers that don't support html";
 
-   @Inject
-   private Mail mail;
-
+   @Inject @Velocity 
+   private Instance<MailMessage> velocityMailMessage;
+   
+   @Inject 
+   private Instance<MailMessage> baseMailMessage;
+   
    public HelloWorld()
    {
    }
@@ -59,47 +64,40 @@ class HelloWorld
       this.email = email;
    }
 
-   public void sendEmail() throws SeamMailException, SeamTemplatingException
-   {
-      sendText();
-      sendHTML();
-      sendHTMLwithAlternative();
-   }
-
    public void sendText() throws SeamMailException
    {
-      BaseMailMessage msg = mail.createBaseMailMessage();
+      MailMessage msg = baseMailMessage.get();
       msg.setFrom(new EmailContact("Seam Framework", "seam@jboss.com"));
       msg.addRecipient(RecipientType.TO, new EmailContact(name, email));
-      msg.setSubject("Text Message from Seam Mail - " + java.util.UUID.randomUUID().toString());
+      msg.subject("Text Message from Seam Mail - " + java.util.UUID.randomUUID().toString());
       msg.setTextBody(text);
       msg.send();
    }
 
    public void sendHTML() throws SeamMailException, SeamTemplatingException
    {
-      VelocityMailMessage msg = mail.createVelocityMailMessage();
+      MailMessage msg = velocityMailMessage.get();
       msg.setFrom(new EmailContact("Seam Framework", "seam@jboss.com"));
-      msg.addRecipient(RecipientType.TO, new EmailContact(name, email));
-      msg.setSubject("HTML Message from Seam Mail - " + java.util.UUID.randomUUID().toString());
-      msg.setHTMLBody("src/main/resources/template.html.vm");
-      msg.putInContext("version", "Seam 3");
-      msg.setImportance(MessagePriority.HIGH);
+      msg.to(name, email);
+      msg.subject("HTML Message from Seam Mail - " + java.util.UUID.randomUUID().toString());
+      msg.setTemplateHTMLBody("src/main/resources/template.html.vm");
+      msg.put("version", "Seam 3");
+      msg.importance(MessagePriority.HIGH);
       msg.send();
    }
 
    public void sendHTMLwithAlternative() throws SeamMailException, SeamTemplatingException
    {
-      VelocityMailMessage msg = mail.createVelocityMailMessage();
+      MailMessage msg = velocityMailMessage.get();
       msg.setFrom(new EmailContact("Seam Framework", "seam@jboss.com"));
       msg.addRecipient(RecipientType.TO, new EmailContact(name, email));
-      msg.setSubject("HTML+Text Message from Seam Mail - " + java.util.UUID.randomUUID().toString());
-      msg.putInContext("version", "Seam 3");
-      msg.setHTMLBodyTextAlt("src/main/resources/template.html.vm", "src/main/resources/template.text.vm");
-      msg.setImportance(MessagePriority.LOW);
-      msg.setDeliveryReciept("cody.lerum@clearfly.net");
-      msg.setReadReciept("cody.lerum@clearfly.net");
-      msg.addAttachment(new File("src/main/resources/template.html.vm"), ContentDisposition.ATTACHMENT);
+      msg.subject("HTML+Text Message from Seam Mail - " + java.util.UUID.randomUUID().toString());
+      msg.put("version", "Seam 3");
+      msg.setHTMLBodyTextAlt("template.html.vm", "src/main/resources/template.text.vm");
+      msg.importance(MessagePriority.LOW);
+      msg.deliveryReciept("cody.lerum@clearfly.net");
+      msg.readReciept("cody.lerum@clearfly.net");
+      msg.addAttachment(new File("template.html.vm"), ContentDisposition.ATTACHMENT);
       msg.addAttachment("http://www.seamframework.org/themes/sfwkorg/img/seam_icon_large.png", "seamLogo.png", ContentDisposition.INLINE);
       msg.send();
    }

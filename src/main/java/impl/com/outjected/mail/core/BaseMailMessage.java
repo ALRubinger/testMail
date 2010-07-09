@@ -1,6 +1,8 @@
 package com.outjected.mail.core;
 
+import java.io.BufferedInputStream;
 import java.io.File;
+import java.io.IOException;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.Collection;
@@ -18,14 +20,17 @@ import javax.mail.internet.MimeBodyPart;
 import javax.mail.internet.MimeMessage;
 import javax.mail.internet.MimeMultipart;
 
+import org.jboss.weld.extensions.resourceLoader.ResourceProvider;
+
 import com.outjected.exception.SeamMailException;
 import com.outjected.mail.annotations.Module;
+import com.outjected.mail.api.MailMessage;
 import com.outjected.mail.core.enumurations.ContentDisposition;
 import com.outjected.mail.core.enumurations.MailHeader;
 import com.outjected.mail.core.enumurations.MessagePriority;
 import com.outjected.mail.core.enumurations.RecipientType;
 
-public class BaseMailMessage
+public class BaseMailMessage implements MailMessage
 {
    private RootMimeMessage rootMimeMessage;
    private String charset;
@@ -33,6 +38,9 @@ public class BaseMailMessage
    private MimeMultipart rootMultipart = new MimeMultipart("mixed");
    private MimeMultipart relatedMultipart = new MimeMultipart("related");
 
+   @Inject 
+   private ResourceProvider resourceProvider;
+   
    @Inject
    public BaseMailMessage(@Module Session session) throws SeamMailException
    {
@@ -89,13 +97,33 @@ public class BaseMailMessage
       {
       }
    }
-
-   public void setSubject(String subject) throws SeamMailException
+   
+   public void from(String name, String address) throws SeamMailException
    {
-      setSubject(subject, "UTF-8");
+      setFrom(new EmailContact(name, address));
+   }
+   
+   public void to(String name, String address) throws SeamMailException
+   {
+      addRecipient(RecipientType.TO, new EmailContact(name, address));
+   }
+   
+   public void cc(String name, String address) throws SeamMailException
+   {
+      addRecipient(RecipientType.CC, new EmailContact(name, address));
+   }
+   
+   public void bcc(String name, String address) throws SeamMailException
+   {
+      addRecipient(RecipientType.BCC, new EmailContact(name, address));
    }
 
-   public void setSubject(String subject, String charset) throws SeamMailException
+   public void subject(String subject) throws SeamMailException
+   {
+      subject(subject, "UTF-8");
+   }
+
+   public void subject(String subject, String charset) throws SeamMailException
    {
       try
       {
@@ -105,6 +133,11 @@ public class BaseMailMessage
       {
          throw new SeamMailException("Unable to add subject:" + subject + " to MIME message with charset: " + charset, e);
       }
+   }
+   
+   public void setFrom(String name, String address) throws SeamMailException
+   {
+      setFrom(new EmailContact(name, address));      
    }
 
    public void setFrom(EmailContact emailContact) throws SeamMailException
@@ -136,17 +169,17 @@ public class BaseMailMessage
       rootMimeMessage.setMessageId(messageId);
    }
 
-   public void setDeliveryReciept(String email) throws SeamMailException
+   public void deliveryReciept(String email) throws SeamMailException
    {
       setHeader(MailHeader.DELIVERY_RECIEPT.headerValue(), "<" + email + ">");
    }
 
-   public void setReadReciept(String email) throws SeamMailException
+   public void readReciept(String email) throws SeamMailException
    {
       setHeader(MailHeader.READ_RECIEPT.headerValue(), "<" + email + ">");
    }
 
-   public void setImportance(MessagePriority messagePriority) throws SeamMailException
+   public void importance(MessagePriority messagePriority) throws SeamMailException
    {
       setHeader("X-Priority", messagePriority.getX_priority());
       setHeader("Priority", messagePriority.getPriority());
@@ -372,4 +405,36 @@ public class BaseMailMessage
          }
       }
    }
+
+   public void put(String name, Object value)
+   {
+      //Not used for BaseMailMessage
+   }
+
+   @Override
+   public void setTemplateHTMLBody(String pathToTemplate) throws SeamMailException
+   {
+      
+      byte[] buffer = new byte[(int) new File(pathToTemplate).length()];
+       
+       BufferedInputStream bis = new BufferedInputStream(resourceProvider.loadResourceStream(pathToTemplate));
+      try
+      {
+         bis.read(buffer);
+      }
+      catch (IOException e)
+      {
+         throw new SeamMailException("Unabled to read template: " + pathToTemplate);
+      }      
+      setHTMLBody(new String(buffer));
+   }
+
+   @Override
+   public void setTemplateHTMLBodyTextAlt(String htmlTemplate, String textTemplate)
+   {
+      // TODO Auto-generated method stub
+      
+   }
+
+   
 }

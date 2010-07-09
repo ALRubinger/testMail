@@ -1,5 +1,7 @@
-package com.outjected.mail.core;
+package com.outjected.mail.velocity;
 
+import java.io.BufferedInputStream;
+import java.io.File;
 import java.io.IOException;
 import java.io.StringWriter;
 
@@ -11,16 +13,22 @@ import org.apache.velocity.app.VelocityEngine;
 import org.apache.velocity.exception.MethodInvocationException;
 import org.apache.velocity.exception.ParseErrorException;
 import org.apache.velocity.exception.ResourceNotFoundException;
+import org.apache.velocity.runtime.resource.loader.ResourceLoader;
+import org.apache.velocity.runtime.resource.loader.StringResourceLoader;
+import org.apache.velocity.runtime.resource.util.StringResourceRepository;
+import org.apache.velocity.runtime.resource.util.StringResourceRepositoryImpl;
+import org.jboss.weld.extensions.resourceLoader.ResourceProvider;
 
 import com.outjected.exception.SeamMailException;
 import com.outjected.exception.SeamTemplatingException;
 import com.outjected.mail.annotations.Module;
 import com.outjected.mail.annotations.Velocity;
-import com.outjected.mail.velocity.SeamBaseVelocityContext;
-import com.outjected.mail.velocity.SeamCDIVelocityContext;
+import com.outjected.mail.api.MailMessage;
+import com.outjected.mail.core.AttachmentMap;
+import com.outjected.mail.core.BaseMailMessage;
 
 @Velocity
-public class VelocityMailMessage extends BaseMailMessage
+public class VelocityMailMessage extends BaseMailMessage implements MailMessage
 {
    private VelocityEngine velocityEngine;
    private SeamBaseVelocityContext context;
@@ -29,13 +37,16 @@ public class VelocityMailMessage extends BaseMailMessage
    private Template htmlTemplate;
 
    @Inject
+   private ResourceProvider resourceProvider;
+
+   @Inject
    public VelocityMailMessage(@Module Session session, @Module SeamCDIVelocityContext seamCDIVelocityContext) throws SeamMailException
    {
       super(session);
       velocityEngine = new VelocityEngine();
       velocityEngine.setProperty("runtime.log.logsystem.class", "org.apache.velocity.runtime.log.SimpleLog4JLogSystem");
       context = new SeamBaseVelocityContext(seamCDIVelocityContext);
-      putInContext("attachmentMap", new AttachmentMap(super.getAttachments()));
+      put("attachmentMap", new AttachmentMap(super.getAttachments()));
    }
 
    @Override
@@ -45,8 +56,7 @@ public class VelocityMailMessage extends BaseMailMessage
       setTextBody(textTemplatePath);
    }
 
-   @Override
-   public void setHTMLBody(String htmlTemplatePath) throws SeamMailException
+   public void setTemplateHTMLBody(String htmlTemplatePath) throws SeamMailException
    {
       try
       {
@@ -74,9 +84,27 @@ public class VelocityMailMessage extends BaseMailMessage
    private Template createTemplate(String templatePath) throws SeamTemplatingException
    {
       Template template = null;
+      
+      byte[] buffer = new byte[(int) new File(templatePath).length()];
+      
+      BufferedInputStream bis = new BufferedInputStream(resourceProvider.loadResourceStream(templatePath));
+     
+      try
+     {
+        bis.read(buffer);
+     }
+     catch (IOException e)
+     {
+        throw new SeamMailException("Unabled to read template: " + templatePath);
+     }      
 
       try
       {
+         resourceProvider.loadResourceStream(templatePath);
+         StringResourceRepository s = new StringResourceRepositoryImpl();
+         s.putStringResource("templatePath", new String(buffer));
+         Template t = new Template();
+         t.setResourceLoader(StringResourceLoader.setRepository(templatePath, s));
          template = velocityEngine.getTemplate(templatePath);
       }
       catch (ResourceNotFoundException e)
@@ -94,12 +122,13 @@ public class VelocityMailMessage extends BaseMailMessage
 
       return template;
    }
-   
+
    private String mergeTemplate(Template template) throws SeamTemplatingException
    {
-      StringWriter writer = new StringWriter();      
+      StringWriter writer = new StringWriter();
       try
       {
+         velocityEngine.evaluate(context, writer, logTag, instream)
          template.merge(context, writer);
       }
       catch (ResourceNotFoundException e)
@@ -118,19 +147,20 @@ public class VelocityMailMessage extends BaseMailMessage
       {
          throw new SeamTemplatingException("Error rendering output", e);
       }
-      return writer.toString();      
+      return writer.toString();
    }
 
-   public void putInContext(String key, Object value)
+   @Override
+   public void put(String key, Object value)
    {
       context.put(key, value);
    }
-   
+
    @Override
    public void send() throws SeamMailException
-   {     
-      if(htmlTemplate != null && textTemplate != null)
-      {         
+   {
+      if (htmlTemplate != null && textTemplate != null)
+      {
          try
          {
             super.setHTMLBodyTextAlt(mergeTemplate(htmlTemplate), mergeTemplate(textTemplate));
@@ -140,7 +170,7 @@ public class VelocityMailMessage extends BaseMailMessage
             throw new SeamMailException("Error sending message", e);
          }
       }
-      else if(htmlTemplate != null)
+      else if (htmlTemplate != null)
       {
          try
          {
@@ -151,7 +181,7 @@ public class VelocityMailMessage extends BaseMailMessage
             throw new SeamMailException("Error sending message", e);
          }
       }
-      else if(textTemplate != null)
+      else if (textTemplate != null)
       {
          try
          {
