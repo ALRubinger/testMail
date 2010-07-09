@@ -13,10 +13,8 @@ import org.hibernate.validator.constraints.NotEmpty;
 import com.outjected.mail.annotations.Velocity;
 import com.outjected.mail.api.MailMessage;
 import com.outjected.mail.api.TemplateMailMessage;
-import com.outjected.mail.core.EmailContact;
 import com.outjected.mail.core.enumurations.ContentDisposition;
 import com.outjected.mail.core.enumurations.MessagePriority;
-import com.outjected.mail.core.enumurations.RecipientType;
 import com.outjected.mail.exception.SeamMailException;
 import com.outjected.mail.exception.SeamTemplatingException;
 
@@ -66,8 +64,8 @@ class HelloWorld
    public void sendText() throws SeamMailException
    {
       MailMessage msg = baseMailMessage.get();
-      msg.setFrom(new EmailContact("Seam Framework", "seam@jboss.com"));
-      msg.addRecipient(RecipientType.TO, new EmailContact(name, email));
+      msg.from("Seam Framework", "seam@jboss.com");
+      msg.to(name, email);
       msg.subject("Text Message from Seam Mail - " + java.util.UUID.randomUUID().toString());
       msg.setText(text);
       msg.send();
@@ -76,7 +74,7 @@ class HelloWorld
    public void sendHTML() throws SeamMailException, SeamTemplatingException
    {
       TemplateMailMessage msg = velocityMailMessage.get();
-      msg.setFrom(new EmailContact("Seam Framework", "seam@jboss.com"));
+      msg.from("Seam Framework", "seam@jboss.com");
       msg.to(name, email);
       msg.subject("HTML Message from Seam Mail - " + java.util.UUID.randomUUID().toString());
       msg.setTemplateHTML("src/main/resources/template.html.vm");
@@ -89,8 +87,8 @@ class HelloWorld
    public void sendHTMLwithAlternative() throws SeamMailException, SeamTemplatingException
    {
       TemplateMailMessage msg = velocityMailMessage.get();
-      msg.setFrom(new EmailContact("Seam Framework", "seam@jboss.com"));
-      msg.addRecipient(RecipientType.TO, new EmailContact(name, email));
+      msg.from("Seam Framework", "seam@jboss.com");
+      msg.to(name, email);
       msg.subject("HTML+Text Message from Seam Mail - " + java.util.UUID.randomUUID().toString());
       msg.put("version", "Seam 3");
       msg.setTemplateHTMLTextAlt("src/main/resources/template.html.vm", "src/main/resources/template.text.vm");
