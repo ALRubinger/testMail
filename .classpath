@@ -16,5 +16,13 @@
 			<attribute name="maven.scope" value="compile"/>
 		</attributes>
 	</classpathentry>
+	<classpathentry kind="lib" path="C:/Users/cody.lerum/.m2/repository/org/freemarker/freemarker/2.3.16/freemarker-2.3.16.jar">
+		<attributes>
+			<attribute name="maven.groupId" value="org.freemarker"/>
+			<attribute name="maven.artifactId" value="freemarker"/>
+			<attribute name="maven.version" value="2.3.16"/>
+			<attribute name="maven.scope" value="compile"/>
+		</attributes>
+	</classpathentry>
 	<classpathentry kind="output" path="target/classes"/>
 </classpath>

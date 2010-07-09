@@ -82,6 +82,7 @@ class HelloWorld
       msg.setTemplateHTMLBody("src/main/resources/template.html.vm");
       msg.put("version", "Seam 3");
       msg.importance(MessagePriority.HIGH);
+      msg.addAttachment("http://www.seamframework.org/themes/sfwkorg/img/seam_icon_large.png", "seamLogo.png", ContentDisposition.INLINE);
       msg.send();
    }
 

@@ -46,7 +46,7 @@ public class VelocityMailMessage extends BaseMailMessage implements TemplateMail
    }
 
    @Override
-   public VelocityMailMessage setTemplateHTMLBodyTextAlt(String htmlTemplatePath, String textTemplatePath) throws SeamMailException
+   public TemplateMailMessage setTemplateHTMLBodyTextAlt(String htmlTemplatePath, String textTemplatePath) throws SeamMailException
    {
       setTemplateHTMLBody(htmlTemplatePath);
       setTemplateTextBody(textTemplatePath);
