@@ -1,4 +1,4 @@
-package com.outjected.mail.core;
+package com.outjected.mail.templating;
 
 import java.io.InputStream;
 

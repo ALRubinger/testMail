@@ -1,4 +1,4 @@
-package com.outjected.mail.velocity;
+package com.outjected.mail.templating.velocity;
 
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
@@ -19,9 +19,9 @@ import com.outjected.mail.annotations.Velocity;
 import com.outjected.mail.api.TemplateMailMessage;
 import com.outjected.mail.core.AttachmentMap;
 import com.outjected.mail.core.BaseMailMessage;
-import com.outjected.mail.core.MailTemplate;
 import com.outjected.mail.exception.SeamMailException;
 import com.outjected.mail.exception.SeamTemplatingException;
+import com.outjected.mail.templating.MailTemplate;
 
 @Velocity
 public class VelocityMailMessage extends BaseMailMessage implements TemplateMailMessage
@@ -54,7 +54,7 @@ public class VelocityMailMessage extends BaseMailMessage implements TemplateMail
       return this;
    }
 
-   public VelocityMailMessage setTemplateHTMLBody(String htmlTemplatePath) throws SeamMailException
+   public TemplateMailMessage setTemplateHTMLBody(String htmlTemplatePath) throws SeamMailException
    {
       try
       {
@@ -67,7 +67,7 @@ public class VelocityMailMessage extends BaseMailMessage implements TemplateMail
       return this;
    }
 
-   public void setTemplateTextBody(String textTemplatePath) throws SeamMailException
+   public TemplateMailMessage setTemplateTextBody(String textTemplatePath) throws SeamMailException
    {
       try
       {
@@ -77,6 +77,7 @@ public class VelocityMailMessage extends BaseMailMessage implements TemplateMail
       {
          throw new SeamMailException("Unable to add Text template to MimeMessage", e);
       }
+      return this;
    }
 
    private MailTemplate createTemplate(String templatePath) throws SeamTemplatingException
@@ -124,7 +125,7 @@ public class VelocityMailMessage extends BaseMailMessage implements TemplateMail
       return writer.toString();
    }
 
-   public VelocityMailMessage put(String key, Object value)
+   public TemplateMailMessage put(String key, Object value)
    {
       context.put(key, value);
       return this;

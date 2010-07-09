@@ -1,4 +1,4 @@
-package com.outjected.mail.velocity;
+package com.outjected.mail.templating.velocity;
 
 import org.apache.velocity.VelocityContext;
 
