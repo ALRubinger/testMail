@@ -16,16 +16,15 @@ import org.apache.velocity.exception.ResourceNotFoundException;
 
 import com.outjected.mail.annotations.Module;
 import com.outjected.mail.annotations.Velocity;
-import com.outjected.mail.api.TemplateMailMessage;
+import com.outjected.mail.api.VelocityMailMessage;
 import com.outjected.mail.core.AttachmentMap;
 import com.outjected.mail.core.BaseMailMessage;
-import com.outjected.mail.core.MailMessage;
 import com.outjected.mail.exception.SeamMailException;
 import com.outjected.mail.exception.SeamTemplatingException;
 import com.outjected.mail.templating.MailTemplate;
 
 @Velocity
-public class VelocityMailMessage extends BaseMailMessage<VelocityMailMessage> implements TemplateMailMessage<VelocityMailMessage>
+public class VelocityMailMessageImpl extends BaseMailMessage<VelocityMailMessage> implements VelocityMailMessage
 {
    private VelocityEngine velocityEngine;
    private SeamBaseVelocityContext context;
@@ -37,7 +36,7 @@ public class VelocityMailMessage extends BaseMailMessage<VelocityMailMessage> im
    //private ResourceProvider resourceProvider;
 
    @Inject
-   public VelocityMailMessage(@Module Session session, @Module SeamCDIVelocityContext seamCDIVelocityContext) throws SeamMailException
+   public VelocityMailMessageImpl(@Module Session session, @Module SeamCDIVelocityContext seamCDIVelocityContext) throws SeamMailException
    {
       super(session);
       velocityEngine = new VelocityEngine();
@@ -124,7 +123,7 @@ public class VelocityMailMessage extends BaseMailMessage<VelocityMailMessage> im
       return writer.toString();
    }
 
-   public VelocityMailMessage put(String key, Object value)
+   public VelocityMailMessageImpl put(String key, Object value)
    {
       context.put(key, value);
       return this;

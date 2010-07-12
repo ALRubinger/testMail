@@ -12,12 +12,11 @@ import org.hibernate.validator.constraints.NotEmpty;
 
 import com.outjected.mail.annotations.Velocity;
 import com.outjected.mail.api.StandardMailMessage;
-import com.outjected.mail.api.TemplateMailMessage;
+import com.outjected.mail.api.VelocityMailMessage;
 import com.outjected.mail.core.enumurations.ContentDisposition;
 import com.outjected.mail.core.enumurations.MessagePriority;
 import com.outjected.mail.exception.SeamMailException;
 import com.outjected.mail.exception.SeamTemplatingException;
-import com.outjected.mail.templating.velocity.VelocityMailMessage;
 
 public @Model
 class HelloWorld
@@ -28,7 +27,7 @@ class HelloWorld
    private String text = "This is the alternative text body for mail readers that don't support html";
 
    @Inject @Velocity 
-   private Instance<TemplateMailMessage<VelocityMailMessage>> velocityMailMessage;
+   private Instance<VelocityMailMessage> velocityMailMessage;
    
    @Inject 
    private Instance<StandardMailMessage> standardMailMessage;
