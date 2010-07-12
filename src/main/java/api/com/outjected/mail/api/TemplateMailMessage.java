@@ -1,8 +1,9 @@
 package com.outjected.mail.api;
 
+import com.outjected.mail.core.MailMessage;
 import com.outjected.mail.exception.SeamMailException;
 
-public interface TemplateMailMessage extends MailMessage
+public interface TemplateMailMessage extends MailMessage<TemplateMailMessage>
 {
    public TemplateMailMessage setTemplateText(String templateFileName) throws SeamMailException;
    

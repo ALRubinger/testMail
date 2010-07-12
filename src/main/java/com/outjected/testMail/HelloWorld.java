@@ -11,7 +11,7 @@ import org.hibernate.validator.constraints.Email;
 import org.hibernate.validator.constraints.NotEmpty;
 
 import com.outjected.mail.annotations.Velocity;
-import com.outjected.mail.api.MailMessage;
+import com.outjected.mail.api.StandardMailMessage;
 import com.outjected.mail.api.TemplateMailMessage;
 import com.outjected.mail.core.enumurations.ContentDisposition;
 import com.outjected.mail.core.enumurations.MessagePriority;
@@ -30,7 +30,7 @@ class HelloWorld
    private Instance<TemplateMailMessage> velocityMailMessage;
    
    @Inject 
-   private Instance<MailMessage> baseMailMessage;
+   private Instance<StandardMailMessage> standardMailMessage;
    
    public HelloWorld()
    {
@@ -63,40 +63,40 @@ class HelloWorld
 
    public void sendText() throws SeamMailException
    {
-      MailMessage msg = baseMailMessage.get();
-      msg.from("Seam Framework", "seam@jboss.com");
-      msg.to(name, email);
-      msg.subject("Text Message from Seam Mail - " + java.util.UUID.randomUUID().toString());
-      msg.setText(text);
-      msg.send();
+      standardMailMessage.get()
+      .from("Seam Framework", "seam@jboss.com")
+      .to(name, email)
+      .subject("Text Message from Seam Mail - " + java.util.UUID.randomUUID().toString())
+      .setText(text)
+      .send();
    }
 
    public void sendHTML() throws SeamMailException, SeamTemplatingException
    {
-      TemplateMailMessage msg = velocityMailMessage.get();
-      msg.from("Seam Framework", "seam@jboss.com");
-      msg.to(name, email);
-      msg.subject("HTML Message from Seam Mail - " + java.util.UUID.randomUUID().toString());
-      msg.setTemplateHTML("src/main/resources/template.html.vm");
-      msg.put("version", "Seam 3");
-      msg.importance(MessagePriority.HIGH);
-      msg.addAttachment("http://www.seamframework.org/themes/sfwkorg/img/seam_icon_large.png", "seamLogo.png", ContentDisposition.INLINE);
-      msg.send();
+      velocityMailMessage.get()
+      .from("Seam Framework", "seam@jboss.com")
+      .to(name, email)
+      .subject("HTML Message from Seam Mail - " + java.util.UUID.randomUUID().toString())
+      .setTemplateHTML("src/main/resources/template.html.vm")
+      .put("version", "Seam 3")
+      .importance(MessagePriority.HIGH)
+      .addAttachment("http://www.seamframework.org/themes/sfwkorg/img/seam_icon_large.png", "seamLogo.png", ContentDisposition.INLINE)
+      .send();
    }
 
    public void sendHTMLwithAlternative() throws SeamMailException, SeamTemplatingException
    {
-      TemplateMailMessage msg = velocityMailMessage.get();
-      msg.from("Seam Framework", "seam@jboss.com");
-      msg.to(name, email);
-      msg.subject("HTML+Text Message from Seam Mail - " + java.util.UUID.randomUUID().toString());
-      msg.put("version", "Seam 3");
-      msg.setTemplateHTMLTextAlt("src/main/resources/template.html.vm", "src/main/resources/template.text.vm");
-      msg.importance(MessagePriority.LOW);
-      msg.deliveryReciept("cody.lerum@clearfly.net");
-      msg.readReciept("cody.lerum@clearfly.net");
-      msg.addAttachment(new File("src/main/resources/template.html.vm"), ContentDisposition.ATTACHMENT);
-      msg.addAttachment("http://www.seamframework.org/themes/sfwkorg/img/seam_icon_large.png", "seamLogo.png", ContentDisposition.INLINE);
-      msg.send();
+      velocityMailMessage.get()
+      .from("Seam Framework", "seam@jboss.com")
+      .to(name, email)
+      .subject("HTML+Text Message from Seam Mail - " + java.util.UUID.randomUUID().toString())
+      .put("version", "Seam 3")
+      .setTemplateHTMLTextAlt("src/main/resources/template.html.vm", "src/main/resources/template.text.vm")
+      .importance(MessagePriority.LOW)
+      .deliveryReciept("cody.lerum@clearfly.net")
+      .readReciept("cody.lerum@clearfly.net")
+      .addAttachment(new File("src/main/resources/template.html.vm"), ContentDisposition.ATTACHMENT)
+      .addAttachment("http://www.seamframework.org/themes/sfwkorg/img/seam_icon_large.png", "seamLogo.png", ContentDisposition.INLINE)
+      .send();
    }
 }

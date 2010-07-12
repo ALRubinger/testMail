@@ -19,6 +19,7 @@ import com.outjected.mail.annotations.Velocity;
 import com.outjected.mail.api.TemplateMailMessage;
 import com.outjected.mail.core.AttachmentMap;
 import com.outjected.mail.core.BaseMailMessage;
+import com.outjected.mail.core.MailMessage;
 import com.outjected.mail.exception.SeamMailException;
 import com.outjected.mail.exception.SeamTemplatingException;
 import com.outjected.mail.templating.MailTemplate;
@@ -48,8 +49,7 @@ public class VelocityMailMessage extends BaseMailMessage implements TemplateMail
    public TemplateMailMessage setTemplateHTMLTextAlt(String htmlTemplatePath, String textTemplatePath) throws SeamMailException
    {
       setTemplateHTML(htmlTemplatePath);
-      setTemplateText(textTemplatePath);
-      
+      setTemplateText(textTemplatePath);      
       return this;
    }
 

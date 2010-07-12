@@ -19,14 +19,13 @@ import javax.mail.internet.MimeMessage;
 import javax.mail.internet.MimeMultipart;
 
 import com.outjected.mail.annotations.Module;
-import com.outjected.mail.api.MailMessage;
 import com.outjected.mail.core.enumurations.ContentDisposition;
 import com.outjected.mail.core.enumurations.MailHeader;
 import com.outjected.mail.core.enumurations.MessagePriority;
 import com.outjected.mail.core.enumurations.RecipientType;
 import com.outjected.mail.exception.SeamMailException;
 
-public class BaseMailMessage implements MailMessage
+public class BaseMailMessage implements MailMessage<BaseMailMessage>
 {
    private RootMimeMessage rootMimeMessage;
    private String charset;
@@ -242,7 +241,7 @@ public class BaseMailMessage implements MailMessage
       return this;
    }
 
-   public void setHTMLTextAlt(String html, String text) throws SeamMailException
+   public BaseMailMessage setHTMLTextAlt(String html, String text) throws SeamMailException
    {
       MimeBodyPart mixedBodyPart = new MimeBodyPart();
 
@@ -269,6 +268,7 @@ public class BaseMailMessage implements MailMessage
       {
          throw new SeamMailException("Unable to build HTML+Text Email", e);
       }
+      return this;
    }
 
    private MimeBodyPart buildTextBodyPart(String text) throws SeamMailException
