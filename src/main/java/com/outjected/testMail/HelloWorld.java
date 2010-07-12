@@ -17,6 +17,7 @@ import com.outjected.mail.core.enumurations.ContentDisposition;
 import com.outjected.mail.core.enumurations.MessagePriority;
 import com.outjected.mail.exception.SeamMailException;
 import com.outjected.mail.exception.SeamTemplatingException;
+import com.outjected.mail.templating.velocity.VelocityMailMessage;
 
 public @Model
 class HelloWorld
@@ -27,7 +28,7 @@ class HelloWorld
    private String text = "This is the alternative text body for mail readers that don't support html";
 
    @Inject @Velocity 
-   private Instance<TemplateMailMessage> velocityMailMessage;
+   private Instance<TemplateMailMessage<VelocityMailMessage>> velocityMailMessage;
    
    @Inject 
    private Instance<StandardMailMessage> standardMailMessage;

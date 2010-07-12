@@ -25,7 +25,7 @@ import com.outjected.mail.exception.SeamTemplatingException;
 import com.outjected.mail.templating.MailTemplate;
 
 @Velocity
-public class VelocityMailMessage extends BaseMailMessage implements TemplateMailMessage
+public class VelocityMailMessage extends BaseMailMessage<VelocityMailMessage> implements TemplateMailMessage<VelocityMailMessage>
 {
    private VelocityEngine velocityEngine;
    private SeamBaseVelocityContext context;
@@ -46,14 +46,14 @@ public class VelocityMailMessage extends BaseMailMessage implements TemplateMail
       put("attachmentMap", new AttachmentMap(super.getAttachments()));
    }
 
-   public TemplateMailMessage setTemplateHTMLTextAlt(String htmlTemplatePath, String textTemplatePath) throws SeamMailException
+   public VelocityMailMessage setTemplateHTMLTextAlt(String htmlTemplatePath, String textTemplatePath) throws SeamMailException
    {
       setTemplateHTML(htmlTemplatePath);
       setTemplateText(textTemplatePath);      
       return this;
    }
 
-   public TemplateMailMessage setTemplateHTML(String htmlTemplatePath) throws SeamMailException
+   public VelocityMailMessage setTemplateHTML(String htmlTemplatePath) throws SeamMailException
    {
       try
       {
@@ -66,7 +66,7 @@ public class VelocityMailMessage extends BaseMailMessage implements TemplateMail
       return this;
    }
 
-   public TemplateMailMessage setTemplateText(String textTemplatePath) throws SeamMailException
+   public VelocityMailMessage setTemplateText(String textTemplatePath) throws SeamMailException
    {
       try
       {
@@ -124,7 +124,7 @@ public class VelocityMailMessage extends BaseMailMessage implements TemplateMail
       return writer.toString();
    }
 
-   public TemplateMailMessage put(String key, Object value)
+   public VelocityMailMessage put(String key, Object value)
    {
       context.put(key, value);
       return this;
@@ -171,5 +171,15 @@ public class VelocityMailMessage extends BaseMailMessage implements TemplateMail
          throw new SeamMailException("No Body was set");
       }
       super.send();
+   }
+
+   /**
+    * {@inheritDoc}
+    * @see com.outjected.mail.core.BaseMailMessage#getRealClass()
+    */
+   @Override
+   protected Class<VelocityMailMessage> getRealClass()
+   {
+      return VelocityMailMessage.class;
    }
 }
